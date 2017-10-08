@@ -1,7 +1,7 @@
 'use strict';
 
 const LocalStrategy = require('passport-local').Strategy;
-const Passport = require('passport');
+let Passport = require('passport');
 const Mongoose = require('mongoose');
 const UserModel = Mongoose.model('User');
 
@@ -14,16 +14,16 @@ const ERRORCODE = {
 };
 
 Passport.use(new LocalStrategy({
-    _usernameField: 'email',
-    _passwordField: 'password'
+    usernameField: 'email',
+    passwordField: 'password'
     },
     (email, password, cb) => {
         UserModel.findOne({ email: email},
             (err, user) => {
-                //TODO implement authenticate
                 if (err || !user || !user.authenticate(password)) {
                     return cb(ERRORCODE.ERROR_SIGNIN_FAILURE, false);
                 }
+                return cb(0, user);
             });
     }
 ));
@@ -62,8 +62,8 @@ exports.saveUser = (email, password, passwordRepeat, groupId, cb) => {
 };
 
 exports.login = (req, res, cb) => {
-    req.body.password = new Buffer(password, 'base64').toString();
-    password.authenticate('local', (err, user) => {
+    req.body.password = new Buffer(req.body.password, 'base64').toString();
+    Passport.authenticate('local', (err, user) => {
        if(user) {
            //change login date
            UserModel.findByIdAndUpdate(user._id, {'$set': {'LastLoginDate': new Date()}},
@@ -73,13 +73,12 @@ exports.login = (req, res, cb) => {
                             req.session.userId = user._id;
                             res.status(200).send();
                         });
-                    } else {
-                        return res.status(400).send({errorMsg: 'email or password is wrong'});
                     }
-
-               })
+               });
+       } else {
+           return res.status(400).send({errorMsg: 'email or password is wrong'});
        }
-    }) (req, res, next);
+    }) (req, res, cb);
 };
 
 

@@ -42,7 +42,7 @@ User.pre('save', function (next) {
     next();
 });
 
-User.methods.hashPassword = (password) => {
+User.methods.hashPassword = function (password) {
     if (this.salt && password) {
         return crypto.pbkdf2Sync(password, new Buffer(this.salt, 'base64'), 10000, 64).toString('base64');
     } else {
@@ -51,7 +51,7 @@ User.methods.hashPassword = (password) => {
 };
 
 // verify method
-User.methods.authenticate = (password) => {
+User.methods.authenticate = function (password) {
     return this.password === this.hashPassword(password);
 };
 

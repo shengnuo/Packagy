@@ -7,7 +7,7 @@ exports.signup = (req, res) => {
         req.body.email,
         req.body.password,
         req.body.passwordRepeat,
-        req.body.userGroup,
+        req.body.group,
         (user, err) => {
             if(err) {
                 //TODO add better messages
