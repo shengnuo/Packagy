@@ -1,10 +1,10 @@
 'use strict';
-//TODO add controllers
+
+const policy = require('../../service/policy.service');
 const userController = require('../../controller/user.controller');
 
 module.exports = (app, password) => {
     app.route('/api/user/signup').post(userController.signup);
     app.route('/api/user/login').post(userController.login);
-    //TODO implement policy
-    app.route('/api/auth/signout').post(userController.logout);
+    app.route('/api/user/logout').all(policy.auth).post(userController.logout);
 };
