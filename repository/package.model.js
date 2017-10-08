@@ -19,6 +19,8 @@ const Package = new Schema({
         type: Date,
         default: null
     }
+}, {
+    collection: 'Package'
 });
 
 module.exports = Mongoose.model('Package', Package);

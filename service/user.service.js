@@ -46,9 +46,10 @@ exports.saveUser = (email, password, passwordRepeat, groupId, cb) => {
     if(!err) {
         let user = new UserModel({
             email: email,
-            password: password
+            password: password,
+            group: groupId
         });
-        UserModel.save((e, user) => {
+        user.save((e, user) => {
             if(e) {
                 err = e.code == 11000? ERRORCODE.ERROR_EMAIL_DUPLICATED
                     : ERRORCODE.ERROR_UNKNOWN;
@@ -59,3 +60,26 @@ exports.saveUser = (email, password, passwordRepeat, groupId, cb) => {
         cb(null, err);
     }
 };
+
+exports.login = (req, res, cb) => {
+    req.body.password = new Buffer(password, 'base64').toString();
+    password.authenticate('local', (err, user) => {
+       if(user) {
+           //change login date
+           UserModel.findByIdAndUpdate(user._id, {'$set': {'LastLoginDate': new Date()}},
+               (error, result) => {
+                    if(!error) {
+                        req.session.regenerate(() => {
+                            req.session.userId = user._id;
+                            res.status(200).send();
+                        });
+                    } else {
+                        return res.status(400).send({errorMsg: 'email or password is wrong'});
+                    }
+
+               })
+       }
+    }) (req, res, next);
+};
+
+

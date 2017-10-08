@@ -4,7 +4,7 @@ const Mongoose = require('mongoose');
 const crypto = require('crypto');
 const Schema = Mongoose.Schema;
 
-const User = new Schema({
+let User = new Schema({
     email: {
         type: String,
         unique: true,
@@ -31,10 +31,10 @@ const User = new Schema({
         type: Date,
         default: Date.now()
     }
-});
+}, {collection: 'User'});
 
 // hash password before insert into the databse
-IdentityAuth.pre('save', function (next) {
+User.pre('save', function (next) {
     if (this.password && this.isModified('password')) {
         this.salt = crypto.randomBytes(16).toString('base64');
         this.password = this.hashPassword(this.password);
@@ -42,7 +42,7 @@ IdentityAuth.pre('save', function (next) {
     next();
 });
 
-IdentityAuth.methods.hashPassword = (password) => {
+User.methods.hashPassword = (password) => {
     if (this.salt && password) {
         return crypto.pbkdf2Sync(password, new Buffer(this.salt, 'base64'), 10000, 64).toString('base64');
     } else {
@@ -51,7 +51,7 @@ IdentityAuth.methods.hashPassword = (password) => {
 };
 
 // verify method
-IdentityAuth.methods.authenticate = (password) => {
+User.methods.authenticate = (password) => {
     return this.password === this.hashPassword(password);
 };
 
