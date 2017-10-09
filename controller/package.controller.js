@@ -14,6 +14,22 @@ function checkDuplicate(userId, trackingNumber) {
     });
 }
 
+function closePackage(packageId, status) {
+    return new Promise((resolve, reject) => {
+        PackageModel.findOneAndUpdate(packageId,
+            {'$set': {
+                closedDate: new Date(),
+                status: status
+            }},
+            (error, result) => {
+                if(error) {
+                    reject(error);
+                }
+                resolve();
+            });
+    });
+}
+
 exports.create = (req, res) => {
     const userId = req.body.userId;
     const tracking = req.body.trackingNumber;
@@ -39,5 +55,20 @@ exports.create = (req, res) => {
         .catch((e) => {
             //TODO add a message
             return res.status(400).send();
+        });
+};
+
+exports.resolve = (req, res) => {
+    closePackage(req.body.packageId, 'resolved')
+        .then(() => {
+            //TODO add a mail sender
+            res.status(200).send();
+        });
+};
+
+exports.delete = (req, res) => {
+    closePackage(req.body.packageId, 'deleted')
+        .then(() => {
+            res.status(200).send();
         });
 };

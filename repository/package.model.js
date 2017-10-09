@@ -11,6 +11,11 @@ const Package = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
+    status: {
+        type: String,
+        enum: ['open', 'resolved', 'deleted'],
+        default: 'open'
+    },
     createdDate: {
         type: Date,
         default: Date.now
