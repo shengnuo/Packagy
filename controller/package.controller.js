@@ -99,3 +99,12 @@ exports.delete = (req, res) => {
             res.status(400).send(error.message);
         })
 };
+
+exports.getPackages = (req, res) => {
+    PackageModel.find({userId: req.session.userId}, (err, packages) => {
+        if (err) {
+            res.status(400).send(err.message);
+        }
+        res.status(200).json(packages);
+    });
+};
