@@ -17,18 +17,36 @@ function checkDuplicate(userId, trackingNumber) {
 
 function closePackage(packageId, status) {
     return new Promise((resolve, reject) => {
-        PackageModel.findOneAndUpdate(packageId,
-            {'$set': {
-                closedDate: new Date(),
-                status: status
-            }},
-            (error, result) => {
-                if(error) {
-                    reject(error);
-                }
-                resolve();
+        //validate
+        PackageModel.findOne({_id: packageId}, (error, pkg) => {
+            if(error) {
+                return reject(error);
+            }
+            if(!pkg) {
+                return reject(new Error('package not found'));
+            }
+            if(pkg.status != 'open') {
+                return reject(new Error('cannot resolve or delete a non-opened package'));
+            }
+            resolve(pkg);
+        })
+    })
+        .then((pkg) => {
+            return new Promise((resolve, reject) => {
+                PackageModel.findOneAndUpdate(pkg._id,
+                    {'$set': {
+                        closedDate: new Date(),
+                        status: status
+                    }},
+                    (error, result) => {
+                        if(error) {
+                            reject(error);
+                        }
+                        resolve(pkg);
+                    });
             });
-    });
+        })
+
 }
 
 exports.create = (req, res) => {
@@ -61,14 +79,23 @@ exports.create = (req, res) => {
 
 exports.resolve = (req, res) => {
     closePackage(req.body.packageId, 'resolved')
-        .then(() => {
-            mailer.sendEmail(req, res);
+        .then((pkg) => {
+            mailer.sendEmail(pkg);
+        })
+        .then((info) => {
+            res.status(200).send('package resolved');
+        })
+        .catch((error) => {
+            res.status(400).send(error.message);
         });
 };
 
 exports.delete = (req, res) => {
     closePackage(req.body.packageId, 'deleted')
-        .then(() => {
-            res.status(200).send();
-        });
+        .then((pkg) => {
+            res.status(200).send('package deleted');
+        })
+        .catch((error) => {
+            res.status(400).send(error.message);
+        })
 };

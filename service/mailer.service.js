@@ -8,24 +8,27 @@ function getEmail (packageId) {
     return new Promise((resolve, reject) => {
         PackageModel.findOne({_id: packageId}, (err, pkg) => {
             if(err) {
-                reject(err);
+                return reject(err);
             }
-            resolve(pkg.userId);
+            return resolve(pkg.userId);
         })
     })
         .then((userId) => {
             return new Promise((resolve, reject) => {
                 UserModel.findOne({_id: userId}, (err, user) => {
                     if(err) {
-                        reject(err);
+                        return reject(err);
                     }
-                    resolve(user.email);
+                    if(!user) {
+                        return reject(new Error('user not found'));
+                    }
+                    return resolve(user.email);
                 });
             });
         });
 }
 
-exports.sendEmail = (req, res) => {
+exports.sendEmail = (pkg) => {
     let transporter = nodemailer.createTransport({
         host: 'smtp.live.com',
         port: 25,
@@ -36,7 +39,7 @@ exports.sendEmail = (req, res) => {
         }
     });
 
-    getEmail(req.body.packageId)
+    getEmail(pkg._id)
         .then((email) => {
             return new Promise((resolve, reject) => {
                 let mailOptions = {
@@ -48,17 +51,11 @@ exports.sendEmail = (req, res) => {
 
                 transporter.sendMail(mailOptions, (error, info) => {
                     if(error) {
-                        reject(error);
+                        return reject(error);
                     }
-                    resolve();
+                    return resolve(info);
 
                 });
-            })
-        })
-        .then(() => {
-            res.status(200).send();
-        })
-        .catch((error) => {
-            res.status(400).send();
+            });
         });
 };

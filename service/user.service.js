@@ -76,7 +76,7 @@ exports.login = (req, res, cb) => {
                     }
                });
        } else {
-           return res.status(400).send({errorMsg: 'email or password is wrong'});
+           return res.status(400).send('email or password is wrong');
        }
     }) (req, res, cb);
 };
