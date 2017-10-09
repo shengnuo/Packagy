@@ -15,7 +15,7 @@ const Package = new Schema({
         type: Date,
         default: Date.now
     },
-    createDate: {
+    closedDate: {
         type: Date,
         default: null
     }

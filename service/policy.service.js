@@ -5,5 +5,6 @@ exports.auth = (req, res, cb) => {
         return cb();
     } else {
         //TODO add redirection
+        res.status(400).send();
     }
 }
