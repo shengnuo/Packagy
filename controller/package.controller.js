@@ -1,6 +1,7 @@
 'use strict';
 const Mongoose = require('mongoose');
 const PackageModel = Mongoose.model('Package');
+const mailer = require('../service/mailer.service');
 
 function checkDuplicate(userId, trackingNumber) {
     return new Promise((resolve, reject) => {
@@ -61,8 +62,7 @@ exports.create = (req, res) => {
 exports.resolve = (req, res) => {
     closePackage(req.body.packageId, 'resolved')
         .then(() => {
-            //TODO add a mail sender
-            res.status(200).send();
+            mailer.sendEmail(req, res);
         });
 };
 
