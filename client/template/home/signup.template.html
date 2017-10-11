@@ -23,6 +23,15 @@
                 </md-input-container>
             </div>
 
+            <md-input-container class="md-block" flex-gt-sm="">
+                <label>User Group</label>
+                <md-select required="" ng-model="user.group">
+                    <md-option ng-repeat="group in groups" value="{{group._id}}">
+                        {{group.groupName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
             <div class="apiErrorMsg">{{errorMsg}}</div>
 
             <md-button ng-disabled="signUpForm.$invalid" class="md-raised md-primary" ng-click="signup()">Submit</md-button>

@@ -6,8 +6,6 @@ require('angular-aria');
 require('angular-material');
 require('angular-base64');
 
-const angular = require('angular');
 
-
-angular.module('home', ['ngRoute', 'ngAnimate','ngAria','ngMaterial', 'base64']);
+require('angular').module('home', ['ngRoute', 'ngAnimate','ngAria','ngMaterial', 'base64']);
 

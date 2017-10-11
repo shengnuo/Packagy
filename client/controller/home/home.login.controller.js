@@ -24,6 +24,7 @@ module.exports = ['$scope', '$http', '$base64', function ($scope, $http, $base64
             //window.location = res.data.url;
             console.log('login successful');
         }, (err) => {
+            console.log(err.message);
             $scope.errorMsg = err.message;
             $scope.user.password = null;
         });

@@ -27,5 +27,14 @@ exports.login = (req, res, cb) => {
 exports.logout = (req, res, cb) => {
     req.session.regenerate(() => {
         req.session.userId = '';
-    })
+    });
+};
+
+exports.getAllUserGroups = (req, res) => {
+    userService.getAllUserGroups((err, groups) => {
+        if(err) {
+            return res.status(400).send(err.message);
+        }
+        return res.status(200).json(groups);
+    });
 };
