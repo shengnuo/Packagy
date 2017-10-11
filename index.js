@@ -8,10 +8,10 @@ const passport = require('passport');
 const swig = require('swig');
 
 var server = express();
-// server.engine('html', swig.renderFile);
-// server.set('view engine', 'html');
-//server.set('views', __dirname + '/src/public/')
-//server.use('/', express.static(__dirname + '/src/public'));
+server.engine('html', swig.renderFile);
+server.set('view engine', 'html');
+server.set('views', __dirname + '/build/');
+server.use('/', express.static(__dirname + '/build/'));
 
 //injecting middleware
 server.use(session({
@@ -31,11 +31,11 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://PackagyDev:Packagy@ds115085.mlab.com:15085/packagy');
 
 //db schemas
-require('./repository/package.model.js');
-require('./repository/user.group.model.js');
-require('./repository/user.model.js');
+require('./server/repository/package.model.js');
+require('./server/repository/user.group.model.js');
+require('./server/repository/user.model.js');
 
 //src routing
-require('./routing')(server, passport);
+require('./server/routing')(server, passport);
 
 server.listen(8081);
