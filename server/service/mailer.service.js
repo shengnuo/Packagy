@@ -34,8 +34,8 @@ exports.sendEmail = (pkg) => {
         port: 25,
         secure: false,
         auth: {
-            user: 'shengnuo.lin@hotmail.com',
-            pass: 'MpGD=_7djo#E2&t]4jF#fq>7~'
+            user: 'example@mail.com',
+            pass: 'password'
         }
     });
 
