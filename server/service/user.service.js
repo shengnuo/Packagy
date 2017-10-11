@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-local').Strategy;
 let Passport = require('passport');
 const Mongoose = require('mongoose');
 const UserModel = Mongoose.model('User');
+const UserGroupModel = Mongoose.model('UserGroup');
 
 const ERRORCODE = {
     ERROR_UNKNOWN: 1,
@@ -81,4 +82,8 @@ exports.login = (req, res, cb) => {
     }) (req, res, cb);
 };
 
-
+exports.getAllUserGroups = (cb) => {
+    UserGroupModel.find({}, (err, groups) => {
+        cb(err, groups);
+    });
+};

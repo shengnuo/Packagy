@@ -34,7 +34,8 @@ gulp.task('lint-client', () => {
 gulp.task('browserify-client', ['lint-client'], (cb) => {
     pump([
         gulp.src(['client/index.js']),
-        browserify({
+        browserify(
+            {
             insertGlobals: true,
             debug: true
         }),

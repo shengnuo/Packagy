@@ -5,6 +5,11 @@ module.exports = ['$scope', '$http', '$base64', function ($scope, $http, $base64
 
     $scope.user = null;
 
+    $http.get('api/user/get_all_groups').then((res) => {
+       $scope.groups = res.data;
+
+    });
+
     $scope.signup = () => {
         $scope.errorMsg = '';
 
