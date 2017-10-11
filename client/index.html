@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" ng-app="home">
+<header>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <title>Packagy</title>
+    <link rel="stylesheet" href="style/home.css" />
+    <link rel="stylesheet" href="style/angular-material.min.css" />
 
+</header>
+<body ng-cloak="">
+
+    <section layout="row" >
+        <md-content class="md-padding">
+            <md-nav-bar nav-bar-aria-label="navigation links">
+                <md-nav-item md-nav-href="#" name="main">
+                    MAIN
+                </md-nav-item>
+                <md-nav-item md-nav-href="#!signup" name="signUp">
+                    SIGN UP
+                </md-nav-item>
+                <md-nav-item md-nav-href="#!login" name="login">
+                    LOGIN
+                </md-nav-item>
+            </md-nav-bar>
+        </md-content>
+    </section>
+    <ng-view></ng-view>
+
+<script type="text/javascript" src="packagy.min.js"></script>
 </body>
+
 </html>

@@ -6,6 +6,7 @@ const rename = require('gulp-rename');
 const browserify = require('gulp-browserify');
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
+const babel = require('gulp-babel');
 
 const prefix = require('gulp-autoprefixer');
 const minifyCSS = require('gulp-clean-css');
@@ -13,11 +14,13 @@ const minifyCSS = require('gulp-clean-css');
 const jshint = require('gulp-jshint');
 
 const del = require('del');
+const pump = require('pump');
 
 gulp.task('clean', function() {
-    return del([
+    return del.sync([
         './dist/style/*',
-        './dist/template/*'
+        './dist/template/*',
+        '/dist/*'
     ]);
 });
 
@@ -28,18 +31,22 @@ gulp.task('lint-client', () => {
 });
 
 
-gulp.task('browserify-client', ['lint-client'], () => {
-    return gulp.src(['client/index.js'])
-        .pipe(browserify({
+gulp.task('browserify-client', ['lint-client'], (cb) => {
+    pump([
+        gulp.src(['client/index.js']),
+        browserify({
             insertGlobals: true,
             debug: true
-        }))
-        .pipe(concat('packagy.js'))
-        .pipe(gulp.dest('build'));
+        }),
+        babel({presets: ['es2015']}),
+        concat('packagy.min.js'),
+        uglify(),
+        gulp.dest('build/')
+    ], cb);
 });
 
 gulp.task('watch', () => {
-   gulp.watch('client/**/*.js', ['browerify-client']);
+   gulp.watch('client/**/*.js', ['browserify-client']);
     gulp.watch(['client/*.html', 'client/template/**/*.html'], ['views']);
 });
 
@@ -50,14 +57,17 @@ gulp.task('views', () => {
 
     //move template files, preserve file structure
     gulp.src(['./client/template/**/*.html'], {
-        base: './'
+        base: './client/template/'
     })
         .pipe(gulp.dest('build/template'));
 });
 
+gulp.task('module-css', () => {
+    return gulp.src('./node_modules/angular-material/angular-material.min.css')
+        .pipe(gulp.dest('build/style'));
+});
 
-
-gulp.task('styles-css', () => {
+gulp.task('styles-css', ['module-css'] ,() => {
    return gulp.src('client/style/*.css')
        .pipe(prefix({
            cascade: true
@@ -66,13 +76,8 @@ gulp.task('styles-css', () => {
        .pipe(gulp.dest('build/style'));
 });
 
-gulp.task('uglify', ['browserify-client'], () => {
-   return gulp.src('build/packagy.js')
-       .pipe(uglify())
-       .pipe(rename('packagy.min.js'))
-       .pipe(gulp.dest('build/'));
-});
 
-gulp.task('build', ['views', 'uglify', 'styles-css']);
+
+gulp.task('build', ['views', 'browserify-client', 'styles-css']);
 
 gulp.task('default', ['clean', 'build', 'watch']);
