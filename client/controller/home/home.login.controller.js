@@ -21,7 +21,7 @@ module.exports = ['$scope', '$http', '$base64', function ($scope, $http, $base64
             },
             method: 'POST'
         }).then((res) => {
-            //window.location = res.data.url;
+            window.location = '/dash';
             console.log('login successful');
         }, (err) => {
             console.log(err.message);
