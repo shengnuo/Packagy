@@ -41,7 +41,7 @@ gulp.task('browserify-client', ['lint-client'], (cb) => {
         }),
         babel({presets: ['es2015']}),
         concat('packagy.min.js'),
-        uglify(),
+        //uglify(),
         gulp.dest('build/')
     ], cb);
 });

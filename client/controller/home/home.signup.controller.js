@@ -29,7 +29,7 @@ module.exports = ['$scope', '$http', '$base64', function ($scope, $http, $base64
         })
             .then((response) => {
                 console.log('Successfully registered!');
-                //window.location = response.data.url;
+                window.location = '/dash';
             }, (err) => {
                 $scope.errorMsg = err.message;
                 // clear password
