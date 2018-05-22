@@ -11,6 +11,7 @@ module.exports = ['$routeProvider', function ($routeProvider) {
             controller: 'signUpCtrl'
         })
         .otherwise({
-            redirect: '/'
+            templateUrl: './template/home/home.template.html',
+            controller: 'homeCtrl'
         });
 }];
