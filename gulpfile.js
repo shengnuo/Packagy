@@ -47,8 +47,10 @@ gulp.task('browserify-client', ['lint-client'], (cb) => {
 });
 
 gulp.task('watch', () => {
-   gulp.watch('client/**/*.js', ['browserify-client']);
+    gulp.watch('client/**/*.js', ['browserify-client']);
     gulp.watch(['client/*.html', 'client/template/**/*.html'], ['views']);
+    gulp.watch('client/**/*.css', ['styles-css']);
+    gulp.watch('client/style/assets/*', ['assets']);
 });
 
 gulp.task('views', () => {
@@ -77,8 +79,13 @@ gulp.task('styles-css', ['module-css'] ,() => {
        .pipe(gulp.dest('build/style'));
 });
 
+gulp.task('assets', () => {
+    return gulp.src('client/style/assets/*')
+       .pipe(gulp.dest('build/style/assets'));  
+})
 
 
-gulp.task('build', ['views', 'browserify-client', 'styles-css']);
+
+gulp.task('build', ['views', 'browserify-client', 'styles-css', 'assets']);
 
 gulp.task('default', ['clean', 'build', 'watch']);
